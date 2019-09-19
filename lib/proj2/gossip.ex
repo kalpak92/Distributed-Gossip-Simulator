@@ -9,6 +9,8 @@ defmodule Gossip do
     GenServer.cast(pid, {:send_message, message, number, topology, n})
   end
 
+  # SERVER APIs
+
   def init(messages) do
     {:ok, messages}
   end
@@ -22,6 +24,8 @@ defmodule Gossip do
     messages = messages + 1
     {:noreply, messages}
   end
+
+  # Implementations
 
   def keep_spreading(message, node_id, topology, n) do
     :timer.sleep(1)
