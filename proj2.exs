@@ -1,0 +1,1 @@
+Starter.start(System.argv)
