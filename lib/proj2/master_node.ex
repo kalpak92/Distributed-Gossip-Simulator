@@ -6,11 +6,24 @@ defmodule Master do
   end
 
   def get_saturated(pid) do
-    GenServer.call(pid, {:get_neighbour,node_id, topology, n}, :infinity)
+    GenServer.call(pid, :get_saturated, :infinity)
+  end
+
+  def get_neighbour(pid, node_id, topology, n) do
+    GenServer.call(pid, {:get_neighbour, node_id, topology, n}, :infinity)
   end
 
   def random(topo, numNodes, nodeId, messages) do
-    # TO DO
+    nodeList = Topology.checkRnd(topo, numNodes, nodeId)
+    nodeList = Enum.filter(nodeList, fn el -> !Enum.member?(messages, el) end)
+    nodeLen = Kernel.length(nodeList)
+
+    if nodeLen == 0 do
+      :noneighbour
+    else
+      randomNeighbour = :rand.uniform(nodeLen)
+      Enum.at(nodeList, randomNeighbour - 1)
+    end
   end
 
   # Server APIs

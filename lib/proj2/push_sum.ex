@@ -18,12 +18,12 @@ defmodule PushSum do
 		newW = Enum.at(messages, 1) + halfW
 
 		oldRatio = Enum.at(messages, 0) / Enum.at(messages, 1)
-		new Ratio = newS/newW
+		newRatio = newS/newW
 
 		oldCount = 
 			if oldRatio - newRatio < 0.0000000001 do
 				if Enum.at(messages, 2) == 2 do
-					Master.add_saturated(:global.whereis_name(:master), nymber)
+					Master.add_saturated(:global.whereis_name(:master), number)
 				end
 
 				Enum.at(messages, 2) + 1
@@ -34,7 +34,7 @@ defmodule PushSum do
 		halfW = newW/2
 
 		newS = newS - halfS
-		newW = neW - halfW
+		newW = newW - halfW
 
 		newState = [newS, newW, oldCount]
 
@@ -53,24 +53,24 @@ defmodule PushSum do
 			{
 				new_message, 
 				r,
-				topo,
+				topology,
 				count,
 				halfS,
 				halfW
 			}
 		)
 
-		keep_spreading(new_message, number, topo, count, halfS, halfW)
+		keep_spreading(new_message, number, topology, count, halfS, halfW)
 	end
 
 	def check_convergence(n, initial, topo) do
-		blacklist = Master.gt_saturated(:global.whereis_name(:master))
+		blacklist = Master.get_saturated(:global.whereis_name(:master))
 		bllen = Kernel.length(blacklist)
 
 		threshold = 1.0
 
 		if (bllen/n >= threshold) do
-			IO.puts("Time = #{System.system_time(:millisecond) - initial)/1000}")
+			IO.puts("Time = #{(System.system_time(:millisecond) - initial)/1000}")
 			Process.exit(self(), :kill)
 		end
 
