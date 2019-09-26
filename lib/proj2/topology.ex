@@ -14,16 +14,15 @@ defmodule Topology do
       topology == "random-2D" ->
         lookup_2d_neighbour(node_id)
 
-      """
-      topology == "torus-3D" ->
-        lookup_3d_torus_neighbour(node_id)
+      #topology == "torus-3D" ->
+       # lookup_3d_torus_neighbour(node_id)
 
-      topology == "honeycomb" ->
-        lookup_honeycomb_neighbour(node_id)
+      #topology == "honeycomb" ->
+       # lookup_honeycomb_neighbour(node_id)
 
-      topology == "honeycomb_random" ->
-        lookup_honeycomb_random_neighbour(node_id)
-      """
+      #topology == "honeycomb_random" ->
+       # lookup_honeycomb_random_neighbour(node_id)
+       
       true ->
         "Select a valid topology"
     end

@@ -40,17 +40,7 @@ defmodule Starter do
 
     name = String.to_atom("node#{starting_node}")
 
-    PushSum.send_message(
-      :global.whereis_name(name),
-      {
-        "Push-Sum",
-        starting_node,
-        topology,
-        n,
-        0,
-        0
-      }
-    )
+    PushSum.send_message(:global.whereis_name(name),{"Push-Sum",starting_node,topology,n,0,0})
 
     PushSum.check_convergence(n, start_time, topology) # figure out this part
   end
