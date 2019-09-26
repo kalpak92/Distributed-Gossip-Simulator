@@ -74,5 +74,14 @@ defmodule Starter do
 
   def find_network([n, topology, _algorithm]) do
     n = String.to_integer(n)
+    cond do
+    	topology == "random-2D" ->
+    		sqrt = :math.sqrt(n) |> Float.floor() |> round
+    		n = :math.pow(sqrt, 2) |> round
+    		Topology.initialize_ets_tables(n)
+    		n
+    	true ->
+    		n
+    end
   end
 end
