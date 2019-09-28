@@ -68,7 +68,7 @@ defmodule Starter do
     	topology == "random-2D" ->
         sqrt = :math.sqrt(n) |> Float.floor() |> round
         n = :math.pow(sqrt, 2) |> round
-        IO.puts(n)
+        #IO.puts(n)
     		Topology.initialize_ets_tables(n)
     		n
     	true ->
