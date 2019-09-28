@@ -7,6 +7,7 @@ defmodule Starter do
     n = find_network(args)
 
     starting_node = :rand.uniform(n)
+    #IO.puts(starting_node)
 
     case args do
       [_, topology, "gossip"] ->
@@ -28,7 +29,7 @@ defmodule Starter do
     name = String.to_atom("node#{starting_node}")
 
     Gossip.send_message(:global.whereis_name(name),{"Gossip", starting_node, topology, n})
-    check_convergence(:gossip, n, start_time)
+    Gossip.check_convergence(n, start_time)
   end
 
 
@@ -68,7 +69,7 @@ defmodule Starter do
     	topology == "random-2D" ->
         sqrt = :math.sqrt(n) |> Float.floor() |> round
         n = :math.pow(sqrt, 2) |> round
-        IO.puts(n)
+        #IO.puts(n)
     		Topology.initialize_ets_tables(n)
     		n
     	true ->

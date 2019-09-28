@@ -38,6 +38,21 @@ defmodule Gossip do
     keep_spreading(message, node_id, topology, n)
   end
 
+  def check_convergence(n, initial) do
+    blacklist = Master.get_saturated(:global.whereis_name(:master))
+    bllen = Kernel.length(blacklist)
+
+    threshold = 1.0
+    #Enum.each(blacklist, fn i -> IO.puts(i) end)
+    IO.puts(bllen/n)
+    if (bllen/n >= threshold) do
+      IO.puts("Time = #{(System.system_time(:millisecond) - initial)/1000}")
+      Process.exit(self(), :kill)
+    end
+
+    check_convergence(n, initial)
+  end
+
   def init_nodes(num) do
     Enum.each(1..num, fn i -> create_node(i) end)
   end

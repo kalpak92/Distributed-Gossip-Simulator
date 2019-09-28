@@ -42,10 +42,14 @@ defmodule Topology do
 
     map =
       Enum.reduce(1..n, %{}, fn node_id, acc ->
-        Map.put(acc, node_id, x: :rand.uniform(), y: :rand.uniform())
+        Map.put(acc, node_id, x: :rand.uniform(100), y: :rand.uniform(100))
       end)
 
     :ets.insert(table, {"data", map})
+    #IO.puts(map)
+    #Enum.each(map, fn {node,values} ->
+  	#	IO.puts(["Node number: #{node} Position: "| Enum.map(values, fn {a,b} -> "#{a}  #{b}" end)]) end)
+
     initialize_2d_neighbour_table(n)
   end
 
@@ -58,6 +62,8 @@ defmodule Topology do
       end)
 
     :ets.insert(table, {"data", map})
+    #Enum.each(map, fn {node,values} ->
+  	#	IO.puts(["Node number: #{node} Nearest Neighbors:"| Enum.map(values, fn x -> " #{x}" end)]) end)
   end
 
   def find_2d_neighbour(node_id) do
@@ -70,7 +76,7 @@ defmodule Topology do
            :math.pow(map[id][:y] - current_node[:y], 2))
         |> :math.sqrt()
 
-      dist < 0.5 and id != node_id
+      dist < 10 and id != node_id
     end)
   end
 

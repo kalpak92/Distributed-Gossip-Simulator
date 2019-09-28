@@ -68,7 +68,7 @@ defmodule PushSum do
 		bllen = Kernel.length(blacklist)
 
 		threshold = 1.0
-
+		#IO.puts(bllen/n)
 		if (bllen/n >= threshold) do
 			IO.puts("Time = #{(System.system_time(:millisecond) - initial)/1000}")
 			Process.exit(self(), :kill)
