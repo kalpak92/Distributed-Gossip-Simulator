@@ -14,7 +14,7 @@ defmodule Starter do
         run_gossip({n, starting_node, topology}, start_time)
 
       [_, topology, "push-sum"] ->
-          run_pushsum({n, starting_node, topology}, start_time)
+        run_pushsum({n, starting_node, topology}, start_time)
       _ ->
         "Algorithm not valid."
     end
@@ -72,6 +72,11 @@ defmodule Starter do
         #IO.puts(n)
     		Topology.initialize_ets_tables(n)
     		n
+      topology == "torus-3D" ->
+        root = :math.pow(n, 0.33) |> Float.floor() |> round
+        n = :math.pow(root,3) |> round
+        Topology.initialize_torus_table(n)
+        n
     	true ->
     		n
     end

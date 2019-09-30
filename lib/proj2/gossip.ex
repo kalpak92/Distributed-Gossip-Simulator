@@ -42,9 +42,9 @@ defmodule Gossip do
     blacklist = Master.get_saturated(:global.whereis_name(:master))
     bllen = Kernel.length(blacklist)
 
-    threshold = 1.0
+    threshold = 0.9
     #Enum.each(blacklist, fn i -> IO.puts(i) end)
-    IO.puts(bllen/n)
+    #IO.puts(bllen/n)
     if (bllen/n >= threshold) do
       IO.puts("Time = #{(System.system_time(:millisecond) - initial)/1000}")
       Process.exit(self(), :kill)

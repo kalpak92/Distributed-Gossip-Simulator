@@ -14,8 +14,8 @@ defmodule Topology do
       topology == "random-2D" ->
         lookup_2d_neighbour(node_id)
 
-      #topology == "torus-3D" ->
-       # lookup_3d_torus_neighbour(node_id)
+      topology == "torus-3D" ->
+        lookup_torus_neighbour(node_id)
 
       #topology == "honeycomb" ->
        # lookup_honeycomb_neighbour(node_id)
@@ -85,4 +85,99 @@ defmodule Topology do
     map[node_id]
   end
 
+  def initialize_torus_table(n) do
+    table = :ets.new(:torus, [:named_table])
+    root=:math.pow(n,0.33) |>round
+    square = :math.pow(root,2) |> round
+
+    map =
+      Enum.reduce(1..n, %{}, fn node_id, acc ->
+        Map.put(acc, node_id, find_torus_neighbour(node_id, n, root, square))
+      end)
+
+    :ets.insert(table, {"data", map})
+  end
+
+  def find_torus_neighbour(k, n, root, square) do
+    # top
+    top =
+      if Enum.member?(list(n, "top", root, square), k) do
+        k + square - root
+      else
+        k - root
+      end
+
+    # bottom
+    bottom =
+      if Enum.member?(list(n, "bottom", root, square), k) do
+        k - square + root
+      else
+        k + root
+      end
+
+    # left
+    left =
+      if rem(k, root) == 1 do
+        k + root - 1
+      else
+        k - 1
+      end
+
+    # right
+    right =
+      if rem(k, root) == 0 do
+        k - root + 1
+      else
+        k + 1
+      end
+
+    front = 
+      if Enum.member?(1..square, k) do
+        k + n - square
+      else
+        k - square
+      end
+
+    back = 
+      if Enum.member?(n-square+1..n,k) do
+        k - n + square
+      else
+        k + square
+      end
+
+    [top, bottom, left, right, front, back]
+  end
+
+  def lookup_torus_neighbour(node_id) do
+    [{_, map}] = :ets.lookup(:torus, "data")
+    map[node_id]
+  end
+
+  def list(_n, base, root, square) do
+    
+    list = 
+    if base == "top" do
+      Enum.to_list(1..root)
+    else
+      Enum.to_list(square-root+1..square)
+    end
+    
+    begin =
+    if base == "top" do
+      1
+    else
+      square-root+1
+    end
+    
+    concatenate(list, begin, 1, square, root)
+  end
+
+  defp concatenate(list, _begin, x, _square, root) when x == root do
+    list 
+  end
+
+  defp concatenate(list, begin, x, square, root) do
+    list = list ++ Enum.to_list(begin+(x*square)..begin+(x*square)+root-1)
+    concatenate(list,begin,x+1,square,root)
+  end
 end
