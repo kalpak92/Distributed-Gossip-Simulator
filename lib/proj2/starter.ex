@@ -77,6 +77,13 @@ defmodule Starter do
         n = :math.pow(root,3) |> round
         Topology.initialize_torus_table(n)
         n
+      topology == "honeycomb" ->
+        nearest_root = :math.sqrt(n) |> Float.floor() |> round
+        val = rem(nearest_root,4)
+        add = 4-val
+        n = :math.pow(nearest_root+add,2) |> round
+        Topology.initialize_honeycomb_table(n)
+        n
     	true ->
     		n
     end

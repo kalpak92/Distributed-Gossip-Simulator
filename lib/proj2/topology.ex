@@ -17,8 +17,8 @@ defmodule Topology do
       topology == "torus-3D" ->
         lookup_torus_neighbour(node_id)
 
-      #topology == "honeycomb" ->
-       # lookup_honeycomb_neighbour(node_id)
+      topology == "honeycomb" ->
+        lookup_honeycomb_neighbour(node_id)
 
       #topology == "honeycomb_random" ->
        # lookup_honeycomb_random_neighbour(node_id)
@@ -180,4 +180,56 @@ defmodule Topology do
     list = list ++ Enum.to_list(begin+(x*square)..begin+(x*square)+root-1)
     concatenate(list,begin,x+1,square,root)
   end
+
+    def initialize_honeycomb_table(n) do
+    table = :ets.new(:honeycomb, [:named_table])
+    root=:math.pow(n,0.5) |>round
+    square = :math.pow(root,2) |> round
+
+    map =
+      Enum.reduce(1..n, %{}, fn node_id, acc ->
+        Map.put(acc, node_id, find_honeycomb_neighbour(node_id, root, square))
+      end)
+
+    :ets.insert(table, {"data", map})
+  end
+
+  def find_honeycomb_neighbour(node_id, row_length, total) do
+    # top
+    list =
+      cond do
+        # Deals the 1st column
+        rem(node_id,row_length) == 1 ->
+          [node_id + 1,node_id - row_length + 1]
+
+        # Deals the last column
+        rem(node_id,row_length) == 0 ->
+          [node_id - 1, node_id - row_length - 1]
+        
+        true ->
+        # Node neighbors have repetition in set of 4
+          cond do
+            rem(node_id,4) == 2 ->
+              [node_id+row_length-1,node_id+1,node_id-1]
+            rem(node_id,4) == 3 ->
+              [node_id+row_length+1,node_id+1,node_id-1]
+            rem(node_id,4) == 0 ->
+              [node_id-row_length-1, node_id+1, node_id-1]
+            true ->
+              [node_id-row_length+1,node_id+1,node_id-1]
+          end
+      end
+    
+    valid_list = Enum.to_list(1..total)
+    
+    # Reject the neighbors which are invalid nodes
+    Enum.filter(list, fn el -> Enum.member?(valid_list,el) end)
+  
+  end
+
+  def lookup_honeycomb_neighbour(node_id) do
+    [{_, map}] = :ets.lookup(:honeycomb, "data")
+    map[node_id]
+  end
+
 end
