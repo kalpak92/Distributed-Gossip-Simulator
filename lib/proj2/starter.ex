@@ -5,18 +5,22 @@ defmodule Starter do
     :global.register_name(:main_process, self())
 
     n = find_network(args)
+    #IO.puts(n)
+    if n == 0 || (Enum.at(args,2) != "gossip" && Enum.at(args,2) != "push-sum") do
+      IO.puts "Please provide valid arguments"
+      IO.puts "Valid Topologies: line, full, rand2D, 3Dtorus, honeycomb and randhoneycomb"
+      IO.puts "Valid Algorithms: gossip and push-sum"
+    else
+      starting_node = :rand.uniform(n)  
+      case args do
+        [_, topology, "gossip"] ->
+          run_gossip({n, starting_node, topology}, start_time)
 
-    starting_node = :rand.uniform(n)
-    #IO.puts(starting_node)
-
-    case args do
-      [_, topology, "gossip"] ->
-        run_gossip({n, starting_node, topology}, start_time)
-
-      [_, topology, "push-sum"] ->
-        run_pushsum({n, starting_node, topology}, start_time)
-      _ ->
-        "Algorithm not valid."
+        [_, topology, "push-sum"] ->
+          run_pushsum({n, starting_node, topology}, start_time)
+        _ ->
+          "Algorithm not valid."
+      end
     end
   end
 
@@ -91,8 +95,10 @@ defmodule Starter do
         n = :math.pow(nearest_root+add,2) |> round
         Topology.initialize_honeycomb_random_table(n)
         n
-    	true ->
+    	topology == "line" || topology == "full" ->
     		n
+      true ->
+        0
     end
   end
 end
