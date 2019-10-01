@@ -66,13 +66,13 @@ defmodule Starter do
   def find_network([n, topology, _algorithm]) do
     n = String.to_integer(n)
     cond do
-    	topology == "random-2D" ->
+    	topology == "rand2D" ->
         sqrt = :math.sqrt(n) |> Float.floor() |> round
         n = :math.pow(sqrt, 2) |> round
         #IO.puts(n)
     		Topology.initialize_ets_tables(n)
     		n
-      topology == "torus-3D" ->
+      topology == "3Dtorus" ->
         root = :math.pow(n, 0.33) |> Float.floor() |> round
         n = :math.pow(root,3) |> round
         Topology.initialize_torus_table(n)
@@ -83,6 +83,13 @@ defmodule Starter do
         add = 4-val
         n = :math.pow(nearest_root+add,2) |> round
         Topology.initialize_honeycomb_table(n)
+        n
+      topology == "randhoneycomb" ->
+        nearest_root = :math.sqrt(n) |> Float.floor() |> round
+        val = rem(nearest_root,4)
+        add = 4-val
+        n = :math.pow(nearest_root+add,2) |> round
+        Topology.initialize_honeycomb_random_table(n)
         n
     	true ->
     		n
