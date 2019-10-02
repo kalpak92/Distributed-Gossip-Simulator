@@ -7,7 +7,7 @@ defmodule PushSum do
 
 	def send_message(pid, {message, number, topology, n, s_half, w_half}) do
 		GenServer.cast(pid, {:send_message, message, number, topology, n, s_half, w_half})
-	end 
+	end
 
 	def init(messages) do
 		{:ok,messages}
@@ -20,7 +20,7 @@ defmodule PushSum do
 		oldRatio = Enum.at(messages, 0) / Enum.at(messages, 1)
 		newRatio = newS/newW
 
-		oldCount = 
+		oldCount =
 			if oldRatio - newRatio < 0.0000000001 do
 				if Enum.at(messages, 2) == 2 do
 					Master.add_saturated(:global.whereis_name(:master), number)
@@ -51,7 +51,7 @@ defmodule PushSum do
 		PushSum.send_message(
 			:global.whereis_name(nodeName),
 			{
-				new_message, 
+				new_message,
 				r,
 				topology,
 				count,
@@ -68,7 +68,7 @@ defmodule PushSum do
 		bllen = Kernel.length(blacklist)
 
 		threshold = 1.0
-		#IO.puts(bllen/n)
+		# IO.puts(bllen/n)
 		if (bllen/n >= threshold) do
 			IO.puts("Time = #{(System.system_time(:millisecond) - initial)/1000}")
 			Process.exit(self(), :kill)
